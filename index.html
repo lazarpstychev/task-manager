@@ -3,46 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Manager по дни (работещ локално и с CSV)</title>
+  <title>Task Manager – интерактивно + CSV</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
-  <h1 class="text-3xl font-bold text-center mb-6">Task Manager по дни (Data-Driven)</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">Task Manager по дни</h1>
+
+  <!-- Форма за добавяне на задача -->
+  <div class="flex justify-center mb-6">
+    <input id="taskInput" type="text" placeholder="Въведи задача" 
+           class="p-2 border rounded-l-lg focus:outline-none w-1/3">
+    <select id="daySelect" class="border px-2 focus:outline-none">
+      <option value="Monday">Понеделник</option>
+      <option value="Tuesday">Вторник</option>
+      <option value="Wednesday">Сряда</option>
+      <option value="Thursday">Четвъртък</option>
+      <option value="Friday">Петък</option>
+      <option value="Saturday">Събота</option>
+      <option value="Sunday">Неделя</option>
+    </select>
+    <button onclick="addTaskFromInput()" 
+            class="bg-blue-500 text-white px-4 rounded-r-lg hover:bg-blue-600">Добави</button>
+  </div>
 
   <!-- Секцията с дните -->
   <div class="grid grid-cols-7 gap-4 mb-6">
-    <div class="bg-white p-3 rounded shadow" id="Monday">
-      <h2 class="font-bold text-center mb-2">Понеделник</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Tuesday">
-      <h2 class="font-bold text-center mb-2">Вторник</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Wednesday">
-      <h2 class="font-bold text-center mb-2">Сряда</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Thursday">
-      <h2 class="font-bold text-center mb-2">Четвъртък</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Friday">
-      <h2 class="font-bold text-center mb-2">Петък</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Saturday">
-      <h2 class="font-bold text-center mb-2">Събота</h2>
-      <ul class="taskList"></ul>
-    </div>
-    <div class="bg-white p-3 rounded shadow" id="Sunday">
-      <h2 class="font-bold text-center mb-2">Неделя</h2>
-      <ul class="taskList"></ul>
-    </div>
+    <div class="bg-white p-3 rounded shadow" id="Monday"><h2 class="font-bold text-center mb-2">Понеделник</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Tuesday"><h2 class="font-bold text-center mb-2">Вторник</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Wednesday"><h2 class="font-bold text-center mb-2">Сряда</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Thursday"><h2 class="font-bold text-center mb-2">Четвъртък</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Friday"><h2 class="font-bold text-center mb-2">Петък</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Saturday"><h2 class="font-bold text-center mb-2">Събота</h2><ul class="taskList"></ul></div>
+    <div class="bg-white p-3 rounded shadow" id="Sunday"><h2 class="font-bold text-center mb-2">Неделя</h2><ul class="taskList"></ul></div>
   </div>
 
   <script>
-    // Функция за добавяне на задача в съответния ден
+    // Добавяне на задача в съответния ден
     function addTaskToDay(task, day) {
       if (!task || !day) return;
       const li = document.createElement('li');
@@ -59,19 +55,19 @@
       btn.parentElement.remove();
     }
 
-    // --------------------------
-    // 1️⃣ Hardcoded задачи (локално)
-    const testTasks = [
-      {Task: 'Buy groceries', Day: 'Monday'},
-      {Task: 'Walk the dog', Day: 'Tuesday'},
-      {Task: 'Learn Katalon', Day: 'Wednesday'},
-      {Task: 'Complete project', Day: 'Friday'},
-      {Task: 'Read a book', Day: 'Sunday'}
-    ];
-    testTasks.forEach(t => addTaskToDay(t.Task, t.Day));
+    // Функция за добавяне на задача от input полето
+    function addTaskFromInput() {
+      const input = document.getElementById('taskInput');
+      const daySelect = document.getElementById('daySelect');
+      const task = input.value.trim();
+      const day = daySelect.value;
+      if (!task) return;
+      addTaskToDay(task, day);
+      input.value = '';
+    }
 
     // --------------------------
-    // 2️⃣ Зареждане на CSV от URL (GitHub Pages)
+    // CSV задачи само за тестове
     async function loadCSV(url) {
       try {
         const res = await fetch(url);
