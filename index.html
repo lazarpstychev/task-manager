@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Manager по дни (Data-Driven)</title>
+  <title>Task Manager по дни (работещ локално и с CSV)</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
@@ -42,7 +42,7 @@
   </div>
 
   <script>
-    // Добавяне на задача в съответния ден
+    // Функция за добавяне на задача в съответния ден
     function addTaskToDay(task, day) {
       if (!task || !day) return;
       const li = document.createElement('li');
@@ -59,20 +59,37 @@
       btn.parentElement.remove();
     }
 
-    // Зареждане на CSV от URL (GitHub Pages)
-    async function loadCSV(url) {
-      const res = await fetch(url);
-      const text = await res.text();
-      const lines = text.trim().split('\n');
-      const headers = lines[0].split(',');
-      const taskIndex = headers.indexOf('Task');
-      const dayIndex = headers.indexOf('Day');
+    // --------------------------
+    // 1️⃣ Hardcoded задачи (локално)
+    const testTasks = [
+      {Task: 'Buy groceries', Day: 'Monday'},
+      {Task: 'Walk the dog', Day: 'Tuesday'},
+      {Task: 'Learn Katalon', Day: 'Wednesday'},
+      {Task: 'Complete project', Day: 'Friday'},
+      {Task: 'Read a book', Day: 'Sunday'}
+    ];
+    testTasks.forEach(t => addTaskToDay(t.Task, t.Day));
 
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',');
-        const task = cols[taskIndex].trim();
-        const day = cols[dayIndex].trim();
-        addTaskToDay(task, day);
+    // --------------------------
+    // 2️⃣ Зареждане на CSV от URL (GitHub Pages)
+    async function loadCSV(url) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('CSV not found');
+        const text = await res.text();
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',');
+        const taskIndex = headers.indexOf('Task');
+        const dayIndex = headers.indexOf('Day');
+
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(',');
+          const task = cols[taskIndex].trim();
+          const day = cols[dayIndex].trim();
+          addTaskToDay(task, day);
+        }
+      } catch (e) {
+        console.warn('CSV не можа да се зареди:', e);
       }
     }
 
