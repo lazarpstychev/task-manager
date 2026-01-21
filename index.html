@@ -78,33 +78,49 @@
   </div>
 
   <script>
+    // Глобален брояч за уникални ID-та
+    let taskCounter = 0;
+
     function addTaskToDay(task, day) {
       if (!task || !day) return;
       
-      // Добави задачата в лист
+      taskCounter++;
+      const taskId = `task-${day}-${taskCounter}`;
+      
+      console.log(`[ДОБАВЯНЕ] ID: ${taskId}, Задача: "${task}", Ден: ${day}`);
+      
+      // Добави задачата в лист с уникално ID
       const li = document.createElement('li');
       li.className = 'bg-gray-50 p-2 rounded task-item';
+      li.id = taskId;
       li.innerHTML = `<span class="task-text">${task}</span>`;
       
       const dayList = document.querySelector(`#${day} .taskList`);
       if (!dayList) return;
       dayList.appendChild(li);
       
-      // Добави бутон за изтриване в отделна колона
+      // Добави бутон за изтриване в отделна колона с data атрибут
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'delete-btn bg-red-500 text-white px-2 py-2 rounded hover:bg-red-600 text-xs';
       deleteBtn.textContent = '✕';
+      deleteBtn.setAttribute('data-task-id', taskId);
       deleteBtn.onclick = function() {
-        removeTask(li, deleteBtn);
+        console.log(`[ИЗТРИВАНЕ] ID: ${taskId}`);
+        removeTask(taskId);
       };
       
       const deleteContainer = document.querySelector(`#${day} .deleteButtons`);
       if (deleteContainer) deleteContainer.appendChild(deleteBtn);
+      
+      console.log(`[РЕЗУЛТАТ] Общо задачи в ${day}: ${dayList.children.length}`);
     }
 
-    function removeTask(taskItem, deleteBtn) {
-      taskItem.remove();
-      deleteBtn.remove();
+    function removeTask(taskId) {
+      const taskItem = document.getElementById(taskId);
+      const deleteBtn = document.querySelector(`button[data-task-id="${taskId}"]`);
+      
+      if (taskItem) taskItem.remove();
+      if (deleteBtn) deleteBtn.remove();
     }
 
     function addTaskFromInput() {
