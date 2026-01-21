@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Manager – CSV версия</title>
+  <title>Task Manager – Тестова версия</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
@@ -61,32 +61,6 @@
       addTaskToDay(task, day);
       input.value = '';
     }
-
-    async function loadCSV(url) {
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('CSV not found');
-        const text = await res.text();
-        const lines = text.trim().split('\n');
-        const headers = lines[0].split(',');
-        const taskIndex = headers.indexOf('Task');
-        const dayIndex = headers.indexOf('Day');
-
-        for (let i = 1; i < lines.length; i++) {
-          const cols = lines[i].split(',');
-          if(cols.length < 2) continue;
-          const task = cols[taskIndex].trim();
-          const day = cols[dayIndex].trim();
-          addTaskToDay(task, day);
-        }
-      } catch (e) {
-        console.warn('CSV не можа да се зареди:', e);
-      }
-    }
-
-    // АКТИВИРАНО ЗАРЕЖДАНЕ ОТ CSV
-    const csvURL = 'https://lazarpstychev.github.io/task-manager/tasks.csv';
-    loadCSV(csvURL);
   </script>
 </body>
 </html>
